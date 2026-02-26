@@ -1,0 +1,80 @@
+{
+  "theft_robbery": {
+    "display_name": "Theft / Robbery",
+    "typical_sections": [
+      "IPC 379",
+      "IPC 380",
+      "IPC 392"
+    ],
+    "required_items": [
+      "FIR number and date",
+      "Police station name",
+      "Place and time of occurrence",
+      "Details of complainant and accused",
+      "Description of stolen property and value",
+      "Recovery/seizure memo of property",
+      "Witness statements",
+      "Site plan / spot inspection memo",
+      "Arrest memo (if arrested)",
+      "Chain of custody of recovered items"
+    ]
+  },
+  "assault_hurt": {
+    "display_name": "Assault / Hurt",
+    "typical_sections": [
+      "IPC 323",
+      "IPC 324",
+      "IPC 325"
+    ],
+    "required_items": [
+      "FIR details (number, date, PS)",
+      "Victim and accused details",
+      "Medical Legal Case (MLC) report",
+      "Injury certificate with nature and number of injuries",
+      "Photographs of injuries (if available)",
+      "Description and seizure memo of weapon (if recovered)",
+      "Doctor's opinion on nature of injuries",
+      "Witness statements about assault"
+    ]
+  },
+  "cyber_fraud": {
+    "display_name": "Cyber Fraud / Online Cheating",
+    "typical_sections": [
+      "IPC 419",
+      "IPC 420",
+      "IT Act 66C",
+      "IT Act 66D"
+    ],
+    "required_items": [
+      "Details of platform and mode of fraud",
+      "Transaction records (bank/UPI statements)",
+      "Screenshots or logs of chats/emails/calls",
+      "Seizure memo of digital devices",
+      "Requests to banks/companies for KYC and logs",
+      "Responses from banks/companies",
+      "Cyber-forensic / FSL report (if available)",
+      "Chain of custody of digital evidence",
+      "Linking of digital identifiers (IP/IMEI) to accused"
+    ]
+  },
+  "ndps": {
+    "display_name": "NDPS (Drugs / Narcotics)",
+    "typical_sections": [
+      "NDPS 20",
+      "NDPS 21",
+      "NDPS 22"
+    ],
+    "required_items": [
+      "Exact place, date and time of seizure",
+      "Description of substance and quantity (small/intermediate/commercial)",
+      "Search memo and seizure memo with seal details",
+      "Compliance note for relevant NDPS provisions (e.g. Sections 42, 50)",
+      "Weighment panchnama",
+      "Sample drawing memo and sample details",
+      "Chain of custody record (seizure to malkhana to FSL)",
+      "Malkhana register entry",
+      "FSL report",
+      "Statements of independent witnesses"
+    ]
+  }
+}
