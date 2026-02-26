@@ -22,3 +22,19 @@ def extract_text_from_pdf_bytes(pdf_bytes: bytes) -> str:
     text = re.sub(r'\n{3,}', '\n\n', text)
     
     return text.strip()
+
+def chunk_text(text: str, chunk_size: int = 400, overlap: int = 50) -> list[str]:
+    """
+    Splits the extracted text into manageable chunks (roughly sentences/paragraphs)
+    to compute granular Semantic Similarity (Stage 2B).
+    """
+    words = text.split()
+    chunks = []
+    
+    for i in range(0, len(words), chunk_size - overlap):
+        chunk = " ".join(words[i : i + chunk_size])
+        chunks.append(chunk)
+        if i + chunk_size >= len(words):
+            break
+            
+    return chunks

@@ -1,6 +1,7 @@
 import streamlit as st
 import os
 import json
+import pandas as pd
 from extractor import extract_text_from_pdf_bytes
 from processor import process_chargesheet_text
 
@@ -8,7 +9,7 @@ def main():
     st.set_page_config(page_title="Smart Chargesheet Assistant", page_icon="⚖️", layout="wide")
     
     st.title("⚖️ Smart Chargesheet Review & Summarisation Assistant")
-    st.markdown("Upload a Hindi Case Diary (Police Chargesheet) to generate a structured case summary, classify the crime, and verify missing procedural documents.")
+    st.markdown("Upload a Hindi Case Diary (Police Chargesheet) to generate a structured case summary, classify the crime, isolate entities, and verify missing procedural documents using Semantic Similarity.")
     
     # Sidebar for API Key
     with st.sidebar:
@@ -19,8 +20,9 @@ def main():
             
         st.markdown("---")
         st.markdown("### About")
-        st.markdown("Built for the AI/ML Hackathon Stage 1 Requirements.")
-        st.markdown("Powered by **Gemini 1.5 Flash**")
+        st.markdown("Built for the AI/ML Hackathon Stage 1 & Stage 2 Requirements.")
+        st.markdown("*   **Core Extraction**: Gemini 1.5 Flash")
+        st.markdown("*   **Semantic Match**: Gemini Embedding 004")
         
     uploaded_file = st.file_uploader("Upload Case Diary PDF", type=["pdf"])
     
@@ -37,7 +39,7 @@ def main():
                 st.error("Could not extract text from the provided PDF.")
                 return
                 
-            with st.spinner("Analyzing text with Gemini AI Model..."):
+            with st.spinner("Analyzing text with Gemini AI Model & Vectorizing Embeddings..."):
                 try:
                     result = process_chargesheet_text(raw_text, api_key)
                 except Exception as e:
@@ -70,7 +72,6 @@ def main():
                 classification = result.get("classification", {})
                 c_type = classification.get("crime_type", "UNKNOWN")
                 
-                # Colorize based on match
                 if c_type == "UNKNOWN":
                     st.warning(f"**Classification:** {c_type}")
                 else:
@@ -78,27 +79,42 @@ def main():
                     
                 st.markdown(f"**Reason:** {classification.get('reason', 'N/A')}")
                 
+                st.header("Stage 2A: Named Entity Recognition")
+                entities = result.get("entities", [])
+                if entities:
+                    df_entities = pd.DataFrame(entities)
+                    # Reorder columns for readability
+                    df_entities = df_entities[['text', 'type', 'role']]
+                    st.dataframe(df_entities, use_container_width=True, hide_index=True)
+                else:
+                    st.info("No explicit legal entities extracted.")
+                
             st.markdown("---")
-            st.header("Output C — Missing Items Checklist")
-            st.markdown("Compared extracted content against the static JSON schema for the detected crime type.")
+            st.header("Stage 2B / Output C — Semantic Missing Items Checklist")
+            st.markdown("Using `text-embedding-004` to compute Vector Cosine Similarity against the required checklist items.")
             
             checklist = result.get("checklist", [])
             if not checklist:
                 st.info("No checklist items generated or crime type was UNKNOWN.")
             else:
+                st.markdown(f"*(Threshold threshold matched: 0.65+)*")
                 for item in checklist:
                     status = item.get("status", "").upper()
-                    name = item.get("item_name", "Unknown Item")
-                    details = item.get("details", "")
+                    name = item.get("item", "Unknown Item")
+                    score = item.get("similarity_score", 0.0)
+                    matched_text = item.get("matched_text", "")
                     
                     if status == "PRESENT":
-                        st.success(f"✅ **{name}**: {details}")
-                    elif status == "PARTIAL":
-                        st.warning(f"⚠️ **{name}**: {details}")
+                        st.success(f"✅ **{name}** (Similarity: {score})")
+                        st.markdown(f"> *{matched_text}*")
                     else:
-                        st.error(f"❌ **{name}**: {details if details else 'Not detected'}")
+                        st.error(f"❌ **{name}** (Similarity: {score})")
+                        if score > 0.0:
+                             st.markdown(f"> *(Highest match was too low: {matched_text[:100]}...)*")
+                        else:
+                             st.markdown("> *(Not detected)*")
                         
-            with st.expander("View Raw JSON Output"):
+            with st.expander("View Raw JSON & Embedding Results"):
                 st.json(result)
 
 if __name__ == "__main__":

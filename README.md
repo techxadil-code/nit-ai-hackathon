@@ -12,6 +12,9 @@ The application takes raw Hindi Police Chargesheets (Case Diaries) in PDF format
 | Stage 1 | Output B (Crime Classification) | ✅ Complete | Classifies into 4 types or UNKNOWN w/ reasoning. |
 | Stage 1 | Output C (Missing Items Checklist) | ✅ Complete | Dynamically maps `checklists.json` to extracted facts. |
 | Stage 1 | Technical Requirements | ✅ Complete | Programmatic API via GenAI SDK, Structured JSON schemas, automated PDF cleaning (`PyMuPDF`). |
+| Stage 2 | Bonus: Smarter Extraction | ✅ Complete | Both 2A and 2B are Implemented. |
+| Stage 2A | Named Entity Recognition | ✅ Complete | Extracts structured legal entities mapping roles dynamically in `processor.py`. Renders in Streamlit. |
+| Stage 2B | Semantic Similarity Scoring | ✅ Complete | Uses `text-embedding-004` and `scikit-learn` cosine similarity to conceptually match checklists. |
 
 ## Setup Instructions
 
